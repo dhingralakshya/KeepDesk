@@ -7,7 +7,7 @@ import axios from "axios";
 
 
 function App() {
-  const [notes, setNotes] = useState([{}]);
+  const [notes, setNotes] = useState([]);
 
   React.useEffect(() => {
     axios.get('http://localhost:4000')
@@ -18,24 +18,32 @@ function App() {
   const postData=async(title,content)=>{
     const data={title,content};
      
-    await axios.post("http://localhost:4000",data);
-}
-
+    const response=await axios.post("http://localhost:4000",data);
+    return response.data;
+  }
+  const postDelete=async(_id)=>{    
+    await axios.post("http://localhost:4000/delete",{id:_id});
+  }
 
   function addNote(newNote) {
-    setNotes(prevNotes => {
-      return [...prevNotes, newNote];
-    });
-    postData(newNote.title,newNote.content);
+    postData(newNote.title, newNote.content)
+    .then((savedNote) => {
+      setNotes(prevNotes => [...prevNotes, savedNote]);
+    })
+    .catch(error => console.error("Add error:", error));
+    
     
   }
 
-  function deleteNote(id) {
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
-      });
-    });
+  async function deleteNote(id) {
+    
+    try {
+      await axios.post("http://localhost:4000/delete", { id });
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+    
   }
 
   return (
@@ -45,8 +53,8 @@ function App() {
       {notes.map((noteItem, index) => {
         return (
           <Note
-            key={index}
-            id={index}
+            key={noteItem._id}
+            id={noteItem._id}
             title={noteItem.title}
             content={noteItem.content}
             onDelete={deleteNote}
