@@ -1,0 +1,244 @@
+/* Base styles (existing styles) */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: white;
+    font-family: "Montserrat", sans-serif;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    padding: 20px; /* Add padding for smaller screens */
+}
+
+.section {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    padding: 40px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.loginDetails {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+.loginDetails h3{
+    color: #f5ba13;
+    text-align: center;
+    font-size: 23px;
+}
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #DEDBE5;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    width: 100% !important;
+    font-size: 16px; /* Better size for mobile */
+}
+
+.input:focus {
+    border: 1px solid #f5ba13;
+    box-shadow: 0 0 6px rgba(245, 186, 19, 0.4);
+    outline: none;
+}
+
+.passwordContainer {
+    display: flex;
+    width: 100%;
+}
+
+.passwordContainer input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    outline: none;
+}
+
+.eye_icon {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background-color: #f5ba13;
+    cursor: pointer;
+}
+
+.icon {
+    padding: 2px;
+    align-items: center;
+    color: #140D1C;
+}
+
+.eye-icon:hover {
+    color: #6a1bb7;
+}
+
+.signIn {
+    width: 100%;
+}
+
+.signInButton {
+    background-color: #f5ba13;
+    color: #fff;
+    padding: 12px;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.signInButton:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+.signInButton:active {
+    transform: scale(0.98);
+}
+
+.account {
+    text-align: center;
+}
+
+.account a {
+    text-decoration: none;
+    color: #f5ba13;
+    font-weight: 500;
+}
+
+.forgot {
+    display: flex;
+    justify-content: end;
+    text-decoration: none;
+}
+
+.passwordInput,
+.emailInput {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.error {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+
+.serverError {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Fix for phone input component */
+.react-tel-input .form-control {
+    width: 100% !important;
+    height: 38px;
+}
+
+/* Responsive Media Queries */
+/* For devices smaller than 480px (mobile phones) */
+@media screen and (max-width: 480px) {
+    .section {
+        padding: 25px 15px;
+        border-radius: 8px;
+        max-width: 100%;
+    }
+    
+    .input {
+        padding: 10px 8px;
+    }
+    
+    .passwordContainer .password {
+        font-size: 14px;
+    }
+    
+    .signInButton {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    
+    .eye_icon {
+        padding: 4px;
+    }
+    
+    .loginDetails {
+        gap: 15px;
+    }
+}
+
+/* For medium devices (tablets) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .section {
+        padding: 30px 25px;
+        max-width: 450px;
+    }
+}
+
+/* For large devices (laptops/desktops) */
+@media screen and (min-width: 769px) {
+    .section {
+        padding: 40px;
+        max-width: 500px;
+    }
+}
+
+/* Fix for PhoneInput component specific issues */
+@media screen and (max-width: 480px) {
+    .react-tel-input .flag-dropdown {
+        font-size: 14px;
+    }
+    
+    .react-tel-input .country-list {
+        width: 250px;
+    }
+}
+
+/* Fix for form fields stacking on smaller screens */
+@media screen and (max-width: 320px) {
+    .section {
+        padding: 20px 12px;
+    }
+    
+    .input, .passwordContainer input {
+        font-size: 14px;
+    }
+}

@@ -5,7 +5,9 @@ function Note(props) {
   function handleClick() {
     props.onDelete(props.id);
   }
-
+  // function noteClick(){
+    
+  // }
   return (
     <div className="note">
       <h1>{props.title}</h1>
