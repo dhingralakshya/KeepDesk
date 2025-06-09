@@ -41,7 +41,6 @@ function Header() {
       }
     }
   },[]);
-  console.log(name);
   
   return (
     <header>

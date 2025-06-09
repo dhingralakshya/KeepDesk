@@ -86,6 +86,21 @@ app.post('/',authenticateToken, async function (req, res) {
   });
 
 
+app.patch("/update/:id", authenticateToken, async function(req,res){
+  const { id } = req.params;
+  const updatedFields = req.body;
+  try{
+    const updatedNote = await Note.findByIdAndUpdate({ _id: id, user: req.user._id }, updatedFields, {new:true});
+    if(!updatedNote){
+      return res.send({ message:"Note not found" });
+    }
+    return res.json(updatedNote);
+  } catch (error) {
+    console.error("Error updating note:", error);
+    res.send({ message: "Error updating note" });
+  }
+})
+
 app.post("/delete",authenticateToken, async function(req,res){
     const { id } = req.body;
     try {
@@ -108,7 +123,7 @@ app.post("/register", async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = new User({ name, email, password: hashedPassword, phone });
       await user.save();
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "6h" });
       res.status(201).send({ token });
     } catch (err) {
       res.status(500).send({ message: "Registration failed" });
@@ -124,7 +139,7 @@ app.post("/login", async (req, res) => {
       const valid = await bcrypt.compare(password, user.password);
       if (!valid) return res.status(403).send({ message: "Invalid password" });
   
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "6h" });
     res.status(200).send({ token });
     } catch (err) {
       res.status(500).send({ message: "Login error" });

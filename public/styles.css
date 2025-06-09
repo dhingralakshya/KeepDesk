@@ -47,6 +47,7 @@
     width: 240px;
     margin: 16px;
     float: left;
+    z-index: 1;
   }
   .note h1 {
     font-size: 1.1em;
@@ -105,6 +106,10 @@
     cursor: pointer;
     outline: none;
   }
+  form.create-note button:hover{
+    background: #f5ba13;
+    transform: scale(1.1) !important;
+  }
   .nav{
     display: flex;
     justify-content: space-between;
@@ -126,4 +131,7 @@
     border: none;
     color: #fff;
     cursor: pointer;
+  }
+  .fabButton{
+    z-index: 10 !important;
   }
