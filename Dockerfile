@@ -1,5 +1,5 @@
 # Stage-1 Build the react app
-FROM node:20.16.0-bullseye-slim as build
+FROM node:20.16.0-bullseye-slim AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
