@@ -43,7 +43,11 @@ function Note(props) {
       <div className="note" onClick={() => setSelectedNote(props.id)}>
         <h1>{noteData.title}</h1>
         <p>{noteData.content}</p>
-        <button onClick={handleClick}>
+        <button onClick={(e) => {
+          e.stopPropagation()
+          handleClick()
+          }}
+        >
           <DeleteIcon />
         </button>
       </div>
