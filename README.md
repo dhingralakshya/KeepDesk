@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+# 📝 KeepDesk - Notes Management Web Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+KeepDesk is a full-stack web application designed to help users manage personal notes with features like user registration, authentication, and full CRUD operations for notes. It includes a React-based frontend, Node.js + Express backend, and MongoDB for data storage.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## ⚙️ Features
 
-### `npm start`
+- User registration and secure login with hashed passwords
+- JWT-based authentication for secure API access
+- Create, read, update, and delete notes
+- User-specific data storage using MongoDB
+- React frontend for seamless user experience
+- Docker support for easy deployment
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tech Stack
 
-### `npm test`
+| Layer     | Technology          |
+|-----------|---------------------|
+| Frontend  | React.js            |
+| Backend   | Node.js, Express.js |
+| Database  | MongoDB / MongoDB Atlas |
+| Auth      | JWT, bcrypt         |
+| Tools     | Docker, dotenv, cors |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 📁 Clone the Repository
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone https://github.com/dhingralakshya/KeepDesk.git
+cd KeepDesk
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Environment Variable configuration
 
-### `npm run eject`
+Add the following envs:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+port=4000
+JWT_SECRET=your_jwt_secret
+server=mongodb://localhost:27017/keepdesk
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+For MongoDB Atlas (cloud), use:
+```
+server=mongodb+srv://<username>:<password>@cluster.mongodb.net/keepdesk?retryWrites=true&w=majority
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### How to Run the Server
+#### Option 1: Using Docker (Recommended)
+1. Clone the repository
+```bash
+git clone https://github.com/dhingralakshya/KeepDesk.git
+cd KeepDesk
+```
+2. Run with Docker Compose
+```bash
+docker-compose up --build
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### Option 2: Manual Setup
+1. Clone and setup backend
+```bash
+git clone https://github.com/dhingralakshya/KeepDesk.git
+cd KeepDesk/backend
+npm install
+```
 
-## Learn More
+2. Start backend server using
+```bash
+node server.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Setup frontend (in a new terminal)
+```bash
+cd KeepDesk
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. Start the frontend
+```bash
+npm start
+```
 
-### Code Splitting
+## API Documentation
+All APIs are protected (except register and login). Use a valid JWT in the Authorization header:
+```
+Authorization: Bearer <your_token>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Method | Endpoint        | Description                             | Auth Required |
+|--------|------------------|-----------------------------------------|----------------|
+| POST   | `/register`      | Register a new user                     | ❌ No          |
+| POST   | `/login`         | Login and get JWT token                 | ❌ No          |
+| GET    | `/`              | Get all notes of the logged-in user     | ✅ Yes         |
+| POST   | `/`              | Create a new note                       | ✅ Yes         |
+| PATCH  | `/update/:id`    | Update a specific note by ID            | ✅ Yes         |
+| POST   | `/delete`        | Delete a specific note (pass ID in body)| ✅ Yes         |
