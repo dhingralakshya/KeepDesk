@@ -101,3 +101,23 @@ Authorization: Bearer <your_token>
 | POST   | `/`              | Create a new note                       | ✅ Yes         |
 | PATCH  | `/update/:id`    | Update a specific note by ID            | ✅ Yes         |
 | POST   | `/delete`        | Delete a specific note (pass ID in body)| ✅ Yes         |
+
+
+## Testing & Coverage
+How to Run Tests
+```bash
+npm test
+```
+- Uses Jest, Supertest, and mongodb-memory-server.
+- Covers unit, integration, and API tests.
+
+| Metric     | Coverage   |
+|------------|------------|
+| Statements | 76.82%     |
+| Branches   | 50.00%     |
+| Functions  | 88.88%     |
+| Lines      | 82.66%     |
+
+✅ Goal of 70%+ coverage achieved!
+
+![Test Coverage](images/test-coverage.png)
