@@ -14,6 +14,7 @@ jobs:
       # These are loaded from GitHub Secrets for security
       server: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      KEPLOY_API_KEY: ${{ secrets.KEPLOY_API_KEY }}
       NODE_ENV: test
 
     steps:
