@@ -14,7 +14,8 @@ jobs:
       # These are loaded from GitHub Secrets for security
       server: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      KEPLOY_API_KEY: ${{ secrets.KEPLOY_API_KEY }}
+      KKEPLOY_API_KEY: ${{ secrets.KEPLOY_API_KEY }}
+      KEPLOY_APP_ID: ${{ secrets.KEPLOY_APP_ID }}
       NODE_ENV: test
 
     steps:
@@ -41,4 +42,5 @@ jobs:
         run: curl --silent -L "https://keploy.io/ent/install.sh" | bash
 
       - name: Run Keploy tests
-        run: keploy test --base-path http://localhost:4000
+        run: |
+          keploy test-suite --app=$KEPLOY_APP_ID --base-path http://localhost:4000 --cloud
