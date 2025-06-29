@@ -121,3 +121,8 @@ npm test
 ✅ Goal of 70%+ coverage achieved!
 
 ![Test Coverage](images/test-coverage.png)
+
+
+## 🧪 Keploy API Test Report
+
+![Keploy Test Report](images/keploy-test-report.png)
