@@ -43,10 +43,18 @@ jobs:
       - name: Execute Keploy tests
         run: keploy test-suite --app=$KEPLOY_APP_ID --base-path http://localhost:4000 --cloud
 
-      - name: Build Docker images
+      - name: Docker login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push backend image
         run: |
-          docker build -t keepdesk-backend ./backend
-          docker build -t keepdesk-frontend .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/keepdesk-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/keepdesk-backend:latest
+
+      - name: Build and push frontend image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/keepdesk-frontend:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/keepdesk-frontend:latest
 
   deploy:
     needs: backend-test-and-build
@@ -59,11 +67,11 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_BACKEND }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_BACKEND_PROFILE }}
-          package: ./backend
+          images: ${{ secrets.DOCKER_USERNAME }}/keepdesk-backend:latest
 
       - name: Deploy frontend image
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_FRONTEND }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_FRONTEND_PROFILE }}
-          package: .
+          images: ${{ secrets.DOCKER_USERNAME }}/keepdesk-frontend:latest
