@@ -59,11 +59,11 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_BACKEND }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_BACKEND_PROFILE }}
-          images: keepdesk-backend
+          package: ./backend
 
       - name: Deploy frontend image
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_FRONTEND }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_FRONTEND_PROFILE }}
-          images: keepdesk-frontend
+          package: .
