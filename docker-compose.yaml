@@ -6,13 +6,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app/src
-        - action: rebuild
-          path: package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./src
+    #       target: /app/src
+    #     - action: rebuild
+    #       path: package.json
     depends_on:
       - backend
 
@@ -22,10 +22,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4000:4000"
-    develop:
-      watch:
-        - action: sync
-          path: ./backend
-          target: /app
-        - action: rebuild
-          path: ./backend/package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./backend
+    #       target: /app
+    #     - action: rebuild
+    #       path: ./backend/package.json
+    # environment:
+    #   - server=${MONGO_URI}
+    #   - JWT_SECRET=${JWT_SECRET}
+    #   - NODE_ENV=production

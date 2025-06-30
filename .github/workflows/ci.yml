@@ -1,4 +1,4 @@
-name: CI/CD with Keploy API Testing
+name: CI/CD KeepDesk (Keploy + Docker + Azure)
 
 on:
   push:
@@ -7,40 +7,63 @@ on:
     branches: [master]
 
 jobs:
-  keploy-api-test:
+  backend-test-and-build:
     runs-on: ubuntu-latest
-
     env:
-      # These are loaded from GitHub Secrets for security
-      server: ${{ secrets.MONGO_URI }}
+      NODE_ENV: test
+      MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       KEPLOY_API_KEY: ${{ secrets.KEPLOY_API_KEY }}
       KEPLOY_APP_ID: ${{ secrets.KEPLOY_APP_ID }}
-      NODE_ENV: test
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install backend dependencies
+      - name: Install backend deps
         run: npm install
         working-directory: ./backend
 
-      - name: Start backend server (background)
-        run: nohup npm start &
+      - name: Start backend locally
+        run: |
+          npm start > backend.log 2>&1 &
+          sleep 10
+          if ! lsof -i:4000; then
+            cat backend.log
+            echo "Backend failed to start"; exit 1
+          fi
         working-directory: ./backend
 
-      - name: Wait for backend to be ready
-        run: sleep 10
-
       - name: Install Keploy CLI
-        run: curl --silent -L "https://keploy.io/ent/install.sh" | bash
+        run: curl -sSL https://keploy.io/ent/install.sh | bash
 
-      - name: Run Keploy tests
+      - name: Execute Keploy tests
+        run: keploy test-suite --app=$KEPLOY_APP_ID --base-path http://localhost:4000 --cloud
+
+      - name: Build Docker images
         run: |
-          keploy test-suite --app=$KEPLOY_APP_ID --base-path http://localhost:4000 --cloud
+          docker build -t keepdesk-backend ./backend
+          docker build -t keepdesk-frontend ./frontend
+
+  deploy:
+    needs: backend-test-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy backend image
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_BACKEND }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_BACKEND_PROFILE }}
+          images: keepdesk-backend
+
+      - name: Deploy frontend image
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_FRONTEND }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_FRONTEND_PROFILE }}
+          images: keepdesk-frontend
