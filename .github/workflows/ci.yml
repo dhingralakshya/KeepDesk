@@ -46,7 +46,7 @@ jobs:
       - name: Build Docker images
         run: |
           docker build -t keepdesk-backend ./backend
-          docker build -t keepdesk-frontend ./frontend
+          docker build -t keepdesk-frontend .
 
   deploy:
     needs: backend-test-and-build
