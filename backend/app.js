@@ -29,7 +29,19 @@ const notesSchema = {
 const Note = mongoose.model("Note", notesSchema);
 
 app.use(express.json());
-app.use(cors({ origin: "*", credentials: true }));
+
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:3000", "http://localhost:8080"];
+
+let corsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+}
+app.use(cors(corsOptions));
 
 // Middleware
 function authenticateToken(req, res, next) {
