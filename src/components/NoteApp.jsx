@@ -8,7 +8,7 @@ import axios from "axios";
 
 function NoteApp() {
   const [notes, setNotes] = useState([]);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = window._env_ && window._env_.REACT_APP_API_URL;
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");

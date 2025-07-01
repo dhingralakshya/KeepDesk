@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Header() {
 
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = window._env_ && window._env_.REACT_APP_API_URL;
 
   const handleLogout = () => {
     localStorage.removeItem("token");

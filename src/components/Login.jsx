@@ -6,7 +6,7 @@ import styles from "./login.module.css";
 
 function Login() {
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = window._env_ && window._env_.REACT_APP_API_URL;
   const [formData, setFormData] = useState({
     email: "",
     password: ""
