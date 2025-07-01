@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Header() {
 
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -21,7 +22,7 @@ function Header() {
       try{
         const decoded = jwtDecode(token);
         user = decoded;
-        fetch(`http://localhost:4000/user/${user._id}`,{
+        fetch(`${apiUrl}/user/${user._id}`,{
           headers: {
             Authorization: `Bearer ${token}`,
           },

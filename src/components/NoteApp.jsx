@@ -8,6 +8,7 @@ import axios from "axios";
 
 function NoteApp() {
   const [notes, setNotes] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
@@ -19,18 +20,18 @@ function NoteApp() {
   };
 
   React.useEffect(() => {
-    axios.get('http://localhost:4000', getAuthHeaders())
+    axios.get(`${apiUrl}`, getAuthHeaders())
       .then((res) => setNotes(res.data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
   const postData=async(title,content)=>{
     const data={title,content};
-    const response=await axios.post("http://localhost:4000",data, getAuthHeaders());
+    const response=await axios.post(`${apiUrl}`,data, getAuthHeaders());
     return response.data;
   }
   const postDelete=async(_id)=>{    
-    await axios.post("http://localhost:4000/delete",{id:_id}, getAuthHeaders());
+    await axios.post(`${apiUrl}/delete`,{id:_id}, getAuthHeaders());
   }
 
   function addNote(newNote) {

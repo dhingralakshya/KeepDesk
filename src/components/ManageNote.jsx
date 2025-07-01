@@ -8,6 +8,7 @@ function ManageNote(props){
         content: props.content
     });
     const [loading, setLoading]= useState(false);
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleChange = (e) =>{
         e.preventDefault();
@@ -42,7 +43,7 @@ function ManageNote(props){
         }
         try{
             const id=props.id;
-            const res= await axios.patch(`http://localhost:4000/update/${id}`, updatedFields, getAuthHeaders());
+            const res= await axios.patch(`${apiUrl}/update/${id}`, updatedFields, getAuthHeaders());
             console.log("Updated", res.data);
             props.onUpdate(res.data);
         } catch (err){

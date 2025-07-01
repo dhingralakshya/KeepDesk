@@ -6,6 +6,7 @@ import styles from "./login.module.css";
 
 function Login() {
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -36,7 +37,7 @@ function Login() {
     setErrorMessage("");
     
     try {
-      const response = await fetch("http://localhost:4000/login", {
+      const response = await fetch(`${apiUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

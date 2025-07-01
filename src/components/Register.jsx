@@ -14,6 +14,7 @@ function Register() {
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
   const [serverError, setServerError] = React.useState("");
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -63,7 +64,7 @@ function Register() {
 
     try {
       // Sending POST request to the backend
-      const response = await fetch("http://localhost:4000/register", {
+      const response = await fetch(`${apiUrl}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
