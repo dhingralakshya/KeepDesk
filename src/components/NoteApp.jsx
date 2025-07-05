@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
+import useSessionNotes from "./useSessionNotes";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 
 function NoteApp() {
   const [notes, setNotes] = useState([]);
-  const apiUrl = window._env_ && window._env_.REACT_APP_API_URL;
+  const apiUrl = window._env_?.REACT_APP_API_URL || process.env.REACT_APP_API_URL;
+  const [guestNotes, setGuestNotes] = useSessionNotes("guestNotes", []);
+  const migrationCompleted = useRef(false);
+
+  const { token, isAuthenticated } = useAuth();
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
     return {
       headers: {
         Authorization: `Bearer ${token}`
@@ -20,10 +25,36 @@ function NoteApp() {
   };
 
   React.useEffect(() => {
-    axios.get(`${apiUrl}`, getAuthHeaders())
-      .then((res) => setNotes(res.data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+    if (isAuthenticated && !migrationCompleted.current) {
+      migrationCompleted.current = true;
+      
+      if (guestNotes.length > 0) {
+        axios.post(`${apiUrl}/migrate`, {notes: guestNotes}, getAuthHeaders())
+          .then(() => {
+            setGuestNotes([]);
+            return axios.get(apiUrl, getAuthHeaders());
+          })
+          .then(res => setNotes(res.data))
+          .catch(err => {
+            console.error("Migration Error:", err);
+            migrationCompleted.current = false;
+          });
+      } else {
+        axios.get(apiUrl, getAuthHeaders())
+          .then(res => setNotes(res.data))
+          .catch(err => {
+            console.error("Fetch Error:", err);
+            migrationCompleted.current = false;
+          });
+      }
+    }
+  }, [isAuthenticated]);
+
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      migrationCompleted.current = false;
+    }
+  }, [isAuthenticated]);
 
   const postData=async(title,content)=>{
     const data={title,content};
@@ -35,32 +66,38 @@ function NoteApp() {
   }
 
   function addNote(newNote) {
-    postData(newNote.title, newNote.content)
-    .then((savedNote) => {
-      setNotes(prevNotes => [...prevNotes, savedNote]);
-    })
-    .catch(error => console.error("Add error:", error));
-    
-    
+    if(isAuthenticated){
+      postData(newNote.title, newNote.content)
+      .then((savedNote) => {
+        setNotes(prevNotes => [...prevNotes, savedNote]);
+      })
+      .catch(error => console.error("Add error:", error));
+    }
+    else{
+      setGuestNotes(prev=>[...prev, {...newNote, _id:Date.now()}])
+    }
   }
 
   async function deleteNote(id) {
-    
-    try {
-      await postDelete(id);
-      setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
-    } catch (error) {
-      console.error("Delete error:", error);
+    if(isAuthenticated){
+      try {
+        await postDelete(id);
+        setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
     }
-    
+    else{
+      setGuestNotes(prev => prev.filter(note => note._id!==id));
+    }
   }
-
+  const notesToShow = isAuthenticated ? notes : guestNotes;
   return (
     <div>
       <Header />
       <CreateArea onAdd={addNote} />
       <div className="notes-container">
-        {notes.map((noteItem, index) => {
+        {notesToShow.map((noteItem, index) => {
           return (
             <Note
               key={noteItem._id}

@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-const notesSchema = {
+const notesSchema = new mongoose.Schema({
   title: String,
   content: String,
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-};
+});
 
 const Note = mongoose.model("Note", notesSchema);
 
@@ -123,6 +123,28 @@ app.post("/", authenticateToken, async (req, res) => {
     res.status(500).json({ message: "Error saving note", error: err.message });
   }
 });
+
+app.post("/migrate", authenticateToken, async(req,res)=>{
+  const notes = req.body.notes;
+  const userId=req.user._id;
+  if (!Array.isArray(notes) || notes.length === 0) {
+    return res.status(400).json({ message: "No notes to migrate." });
+  }
+  const notesToSave = notes.map(note => {
+    const { _id, ...noteWithoutId } = note;
+    return{
+      ...noteWithoutId,
+      user: userId
+    }
+  });
+  try{
+    const savedNotes = await Note.insertMany(notesToSave);
+    res.status(201).json(savedNotes)
+  }
+  catch(error){
+    res.status(500).json({message: "Failed to add notes", error});
+  }
+})
 
 app.patch("/update/:id", authenticateToken, async (req, res) => {
   try {

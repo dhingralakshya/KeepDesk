@@ -3,61 +3,45 @@ import { useNavigate, Link } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import styles from "./login.module.css";
+import { useAuth } from "./AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const apiUrl = window._env_ && window._env_.REACT_APP_API_URL;
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+  const apiUrl = window._env_?.REACT_APP_API_URL || process.env.REACT_APP_API_URL;
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { login } = useAuth();
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const togglePasswordVisibility = () => setPasswordVisible((v) => !v);
 
   const handleKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      togglePasswordVisibility();
-    }
+    if (event.key === "Enter" || event.key === " ") togglePasswordVisibility();
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-    
     try {
       const response = await fetch(`${apiUrl}/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
-      
       const data = await response.json();
-      
       if (response.ok) {
-        // Store the JWT token in localStorage if login is successful
-        localStorage.setItem("token", data.token);
+        login(data.token);
         navigate("/");
       } else {
         setErrorMessage(data.message || "Login failed. Please check your credentials.");
       }
     } catch (err) {
-      setErrorMessage(
-        err.message || "Login failed. Please check your credentials."
-      );
+      setErrorMessage(err.message || "Login failed. Please check your credentials.");
     }
   };
 
@@ -68,7 +52,6 @@ function Login() {
           <div className={styles.loginDetails}>
             <h3>Login</h3>
             {errorMessage && <div className={styles.error}>{errorMessage}</div>}
-            
             <div className={styles.emailInput}>
               <label htmlFor="email" className={styles.label}>
                 Email
@@ -84,7 +67,6 @@ function Login() {
                 />
               </label>
             </div>
-            
             <div className={styles.passwordInput}>
               <label htmlFor="password" className={styles.label}>
                 Password
@@ -119,18 +101,13 @@ function Login() {
                 Forgot Password?
               </Link>
             </div>
-            
             <div className={styles.signIn}>
-              <button
-                type="submit"
-                className={styles.signInButton}
-              >
+              <button type="submit" className={styles.signInButton}>
                 Sign In
               </button>
             </div>
           </div>
         </form>
-        
         <div className={styles.account}>
           <Link to="/register">Don&apos;t have an account?</Link>
         </div>

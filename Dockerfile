@@ -13,6 +13,7 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Add the entrypoint script
 COPY docker-entrypoint.sh /docker-entrypoint.d/env-inject.sh
+RUN chmod +x /docker-entrypoint.d/env-inject.sh
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
