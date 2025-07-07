@@ -6,6 +6,7 @@ import CreateArea from "./CreateArea";
 import useSessionNotes from "./useSessionNotes";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
+import LoginPromptModal from "./LoginPromptModal";
 
 
 function NoteApp() {
@@ -15,6 +16,7 @@ function NoteApp() {
   const migrationCompleted = useRef(false);
 
   const { token, isAuthenticated } = useAuth();
+  const [showPrompt, setShowPrompt] = useState(false);
 
   const getAuthHeaders = () => {
     return {
@@ -23,6 +25,14 @@ function NoteApp() {
       }
     };
   };
+
+  React.useEffect(() => {
+    if(!isAuthenticated){
+      setShowPrompt(true);
+    } else {
+      setShowPrompt(false);
+    }
+  }, [isAuthenticated]);
 
   React.useEffect(() => {
     if (isAuthenticated && !migrationCompleted.current) {
@@ -109,6 +119,7 @@ function NoteApp() {
           );
         })}
       </div>
+      <LoginPromptModal open={showPrompt} onClose={()=> setShowPrompt(false)} />
       <Footer />
     </div>
   );
